@@ -1,0 +1,57 @@
+{
+  "name": "srv-to-pdf",
+  "version": "0.0.0",
+  "description": "Microservice to convert HTML with embedded or served css to pdf using webkitToPDF",
+  "homepage": "https://github.com/uci-edu/to-pdf",
+  "author": {
+    "name": "Rhett Lowe",
+    "email": "rng2ml@gmail.com",
+    "url": "rhettl.com"
+  },
+  "files": [
+    "lib"
+  ],
+  "main": "lib/index.js",
+  "keywords": [
+    "html",
+    "convert",
+    "pdf",
+    "rest",
+    "microservice"
+  ],
+  "devDependencies": {
+    "request": "^2.69.0",
+    "eslint-config-xo-space": "^0.7.0",
+    "gulp": "^3.9.0",
+    "gulp-eslint": "^1.0.0",
+    "gulp-exclude-gitignore": "^1.0.0",
+    "gulp-line-ending-corrector": "^1.0.1",
+    "gulp-istanbul": "^0.10.3",
+    "gulp-mocha": "^2.0.0",
+    "gulp-plumber": "^1.0.0",
+    "gulp-nsp": "^2.1.0",
+    "gulp-coveralls": "^0.1.0"
+  },
+  "engines": {
+    "node": ">=4.0.0"
+  },
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "deep-extend": "^0.4.1",
+    "if-err": "^0.1.1",
+    "restify": "^4.0.3",
+    "wkhtmltopdf": "^0.1.5"
+  },
+  "scripts": {
+    "start": "node ./bin/www.js",
+    "prepublish": "gulp prepublish",
+    "test": "gulp"
+  },
+  "eslintConfig": {
+    "extends": "xo-space",
+    "env": {
+      "mocha": true
+    }
+  },
+  "repository": "uci-soe/srv-to-pdf"
+}
