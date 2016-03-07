@@ -1,6 +1,6 @@
 {
   "name": "srv-to-pdf",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Microservice to convert HTML with embedded or served css to pdf using webkitToPDF",
   "homepage": "https://github.com/uci-edu/to-pdf",
   "author": {
@@ -31,7 +31,9 @@
     "gulp-nsp": "^2.1.0",
     "gulp-plumber": "^1.0.0",
     "is-pdf": "^1.0.0",
-    "request": "^2.69.0"
+    "is-stream": "^1.0.1",
+    "request": "^2.69.0",
+    "q": "latest"
   },
   "engines": {
     "node": ">=4.0.0"
@@ -49,7 +51,10 @@
     "test": "gulp"
   },
   "eslintConfig": {
-    "extends": "rhett"
+    "extends": "rhett",
+    "rules": {
+      "no-param-reassign": 0
+    }
   },
   "repository": "uci-soe/srv-to-pdf"
 }

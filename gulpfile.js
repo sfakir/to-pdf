@@ -51,7 +51,7 @@ gulp.task('watch', function () {
 
 gulp.task('coveralls', ['test'], function () {
   if (!process.env.CI) {
-    return;
+    return null;
   }
 
   return gulp.src(path.join(__dirname, 'coverage/lcov.info'))

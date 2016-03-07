@@ -6,16 +6,18 @@ var extend = require('deep-extend');
 //var app = require('../lib');
 var pdfFac = require('../lib');
 
+var pkg = require('../package.json');
+
 // Get untrackable configurations.
 try {
-  extend(process.env, require('../config.json'));
+  extend(process.env, require('../config.json')); //eslint-disable-line global-require
 } catch (err) {
   if (!err.message || err.code !== 'MODULE_NOT_FOUND') {
     throw err;
   }
 }
 
-var serviceName = process.env.NAME || require('../package.json').name;
+var serviceName = process.env.NAME || pkg.name;
 var toPdf = pdfFac({
   command: process.env.CMD_PATH || '~/bin/wkhtmltopdf'
 });
@@ -27,11 +29,9 @@ var server = restify.createServer({
 
 
 
-
-server.post('/', restify.bodyParser(), function (req, res, next) {
+server.post('/', restify.bodyParser(), function (req, res) {
   var opts = req.body || req.params;
   var html = opts.html;
-  // Todo: Changed this, reflect changes in client
 
   if (opts.html) {
     delete opts.html;
@@ -45,5 +45,5 @@ server.post('/', restify.bodyParser(), function (req, res, next) {
 
 
 server.listen(process.env.PORT || 15000, function () {
-  console.log('%s server started at %s', server.name, server.url);
+  console.log('%s server started at %s', server.name, server.url); //eslint-disable-line no-console
 });
