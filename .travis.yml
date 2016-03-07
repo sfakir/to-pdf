@@ -4,6 +4,14 @@ node_js:
   - v5
 env:
   - CXX=g++-4.8
+before_install:
+#  - sudo add-apt-repository --yes ppa:pov/wkhtmltopdf
+#  - sudo apt-get --yes update -q
+#  - sudo apt-get install --yes wkhtmltopdf
+  - sudo apt-get install --yes xfonts-75dpi
+  - wget http://download.gna.org/wkhtmltopdf/0.12/0.12.2/wkhtmltox-0.12.2_linux-precise-amd64.deb
+  - sudo dpkg -i wkhtmltox-0.12.2_linux-precise-amd64.deb
+  - which wkhtmltopdf && export CMD_PATH=`which wkhtmltopdf`
 addons:
   apt:
     sources:
