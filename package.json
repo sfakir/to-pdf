@@ -20,17 +20,18 @@
     "microservice"
   ],
   "devDependencies": {
-    "request": "^2.69.0",
-    "eslint-config-xo-space": "^0.7.0",
+    "eslint-config-rhett": "^0.1.0",
     "gulp": "^3.9.0",
-    "gulp-eslint": "^1.0.0",
+    "gulp-coveralls": "^0.1.4",
+    "gulp-eslint": "^2.0.0",
     "gulp-exclude-gitignore": "^1.0.0",
-    "gulp-line-ending-corrector": "^1.0.1",
     "gulp-istanbul": "^0.10.3",
+    "gulp-line-ending-corrector": "^1.0.1",
     "gulp-mocha": "^2.0.0",
-    "gulp-plumber": "^1.0.0",
     "gulp-nsp": "^2.1.0",
-    "gulp-coveralls": "^0.1.0"
+    "gulp-plumber": "^1.0.0",
+    "is-pdf": "^1.0.0",
+    "request": "^2.69.0"
   },
   "engines": {
     "node": ">=4.0.0"
@@ -48,10 +49,7 @@
     "test": "gulp"
   },
   "eslintConfig": {
-    "extends": "xo-space",
-    "env": {
-      "mocha": true
-    }
+    "extends": "rhett"
   },
   "repository": "uci-soe/srv-to-pdf"
 }
