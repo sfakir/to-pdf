@@ -9,19 +9,24 @@ var isPromise = require('q').isPromise;
 
 describe('toPdf', function () {
   var testString = '<html><body><h1>hello, world</h1></body></html>';
-  var slowTime   = 2 * 1000 * 3; // 2 seconds is normal, slow needs x3 times for "Normal"
+  var slowTime   = 10 * 1000 * 3; // 2 seconds is normal, slow needs x3 times for "Normal"
   var toPdf;
+  var opts = {};
+
+  if (process.env.CMD_PATH) {
+    opts.command = process.env.CMD_PATH;
+  }
 
   describe('eventual returns', function () {
     before(function () {
-      toPdf = toPdfFac();
+      toPdf = toPdfFac(opts);
     });
 
     it('should produce a pdf buffer/file', function (done) {
       this.slow(slowTime); // eslint-disable-line no-invalid-this
-      var out = toPdf(testString);
 
-      out.then(function (pdf) {
+      toPdf(testString, function (err, pdf) {
+        assert.ifError(err);
         assert(isPdf(pdf), 'not a pdf');
         done();
       });
@@ -30,7 +35,7 @@ describe('toPdf', function () {
 
   describe('immediate returns', function () {
     before(function () {
-      toPdf = toPdfFac();
+      toPdf = toPdfFac(opts);
     });
 
     it('should produce produce a promise', function () {
@@ -60,7 +65,7 @@ describe('toPdf', function () {
 
   describe('errors', function () {
     before(function () {
-      toPdf = toPdfFac();
+      toPdf = toPdfFac(opts);
     });
 
     it('should produce error with no string', function () {
@@ -72,24 +77,25 @@ describe('toPdf', function () {
 
   describe('Options', function () {
     var newLoc = '/new/route';
+    var otherToPdf;
     before(function () {
-      toPdf = toPdfFac({
+      otherToPdf = toPdfFac({
         command: newLoc
       });
     });
 
     it('should allow for alternative wkhtmltopdf bin location', function () {
-      assert.equal(toPdf._wkpdf.command, newLoc);
-      assert(!toPdf.defaults.command, 'Command option should be removed before it hits the defaults');
+      assert.equal(otherToPdf._wkpdf.command, newLoc);
+      assert(!otherToPdf.defaults.command, 'Command option should be removed before it hits the defaults');
     });
 
     it('should allow for landscape option to change orientation', function (done) {
-      toPdf._wkpdf = function (_, options) {
+      otherToPdf._wkpdf = function (_, options) {
         assert.equal(options.orientation, 'Landscape');
         done();
       };
 
-      toPdf.stream(testString, {landscape: true});
+      otherToPdf.stream(testString, {landscape: true});
     });
 
 
