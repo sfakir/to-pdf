@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+USER='rhettl'
+NAME='toPdf'
+TAG='node-wkhtmltopdf'
+ID_FILE='./.dockerid'
+ID=''
+
+PORT=8080
+if [ ${1} != '' ]; then
+  if [ ${1} -gt 0 ]; then
+    PORT=${1}
+  else
+    echo "USAGE: docker
+  fi
+fi
+
+if [ -s ${ID_FILE} ]; then
+  ID=`cat ${ID_FILE}`
+  echo "Docker ID: ${ID}"
+  if [ $(docker ps --no-trunc --quiet | grep ${ID}) != '' ]; then
+    docker stop ${ID}
+    docker rm ${ID}
+  fi
+fi
+
+docker build -t "${USER}/${TAG}" .
+ID=`docker run -d -p "${PORT}":8080 -e PORT=8080 --name "${NAME}" "${USER}/${TAG}"`
+
+echo ${ID} > ${ID_FILE}
