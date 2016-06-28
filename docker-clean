@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+IDS=$(docker ps --all --no-trunc | grep Exited | awk '{print $1}')
+for ID in ${IDS}; do
+  docker rm ${ID}
+done
