@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+ID_FILE='./.dockerid'
+ID=''
+
+if [ -s ${ID_FILE} ]; then
+  ID=`cat ${ID_FILE}`
+  if [[ $(docker ps --no-trunc --quiet | grep ${ID}) != '' ]]; then
+    docker stop ${ID}
+    docker rm ${ID}
+  fi
+fi
