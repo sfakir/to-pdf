@@ -33,25 +33,27 @@ server.use(restify.gzipResponse());
 server.post('/', restify.bodyParser(), function (req, res, next) {
   var html = req.body && req.body.html;
 
-  if (!html) {
-    return next(new Error('No HTML body given.'));
+  if (html) {
+    Object.getOwnPropertyNames(req.query).forEach(i => {
+      let t = req.query[i].toLowerCase();
+      if (t === 'true' || t === 'false') {
+        req.query[i] = t === 'true';
+      }
+    });
+
+    toPdf(html, req.query, (err, out) => {
+      if (err) {
+        next(err);
+      } else {
+
+        res.setHeader('content-type', 'application/pdf');
+        res.send(out);
+      }
+    });
+
+  } else {
+    next(new Error('No HTML body given.'));
   }
-
-  Object.getOwnPropertyNames(req.query).forEach(i => {
-    let t = req.query[i].toLowerCase();
-    if (t === 'true' || t === 'false') {
-      req.query[i] = t === 'true';
-    }
-  });
-
-  toPdf(html, req.query, (err, out) => {
-    if (err) {
-      return next(err);
-    }
-
-    res.setHeader('content-type', 'application/pdf');
-    res.send(out);
-  });
 });
 
 
