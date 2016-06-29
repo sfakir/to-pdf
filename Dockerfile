@@ -11,12 +11,11 @@ RUN apt-get install -y curl build-essential wget
 
 # Download and install wkhtmltopdf
 RUN apt-get install -y xorg libssl-dev libxrender-dev gdebi xvfb libicu52 xfonts-75dpi
-RUN wget https://bitbucket.org/wkhtmltopdf/wkhtmltopdf/downloads/wkhtmltox-0.13.0-alpha-7b36694_linux-trusty-amd64.deb
-RUN dpkg -i wkhtmltox-0.13.0-alpha-7b36694_linux-trusty-amd64.deb
-RUN apt-get -f install
+RUN wget http://download.gna.org/wkhtmltopdf/0.12/0.12.3/wkhtmltox-0.12.3_linux-generic-amd64.tar.xz
+RUN tar -xvJf wkhtmltox-0.12.3_linux-generic-amd64.tar.xz -C /usr/local/
+ENV PATH /usr/local/wkhtmltox/bin:$PATH
 
 # Install Nodejs
-
 RUN curl -sL https://deb.nodesource.com/setup_4.x | bash
 RUN apt-get install -y nodejs
 RUN npm install --global npm

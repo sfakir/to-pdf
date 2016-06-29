@@ -43,12 +43,15 @@
     "deep-extend": "^0.4.1",
     "if-err": "^0.1.1",
     "restify": "^4.0.3",
-    "wkhtmltopdf": "^0.1.5"
+    "wkhtmltopdf": "^0.3.1"
   },
   "scripts": {
     "start": "node ./bin/www.js",
     "prepublish": "gulp prepublish",
-    "test": "gulp"
+    "test": "gulp",
+    "docker-rebuild": "./docker-rebuild",
+    "docker-clean": "./docker-clean",
+    "docker-kil": "./docker-kill"
   },
   "eslintConfig": {
     "extends": "rhett",

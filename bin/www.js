@@ -19,7 +19,7 @@ try {
 
 var serviceName = process.env.NAME || pkg.name;
 var toPdf = pdfFac({
-  command: process.env.CMD_PATH || '~/bin/wkhtmltopdf'
+  command: process.env.CMD_PATH || 'wkhtmltopdf'
 });
 
 var server = restify.createServer({
@@ -27,19 +27,31 @@ var server = restify.createServer({
   version: '1.0.0'
 });
 
+server.use(restify.queryParser());
+server.use(restify.gzipResponse());
 
+server.post('/', restify.bodyParser(), function (req, res, next) {
+  var html = req.body && req.body.html;
 
-server.post('/', restify.bodyParser(), function (req, res) {
-  var opts = req.body || req.params;
-  var html = opts.html;
-
-  if (opts.html) {
-    delete opts.html;
+  if (!html) {
+    return next(new Error('No HTML body given.'));
   }
 
-  toPdf.stream(html, opts)
-    .pipe(res)
-  ;
+  Object.getOwnPropertyNames(req.query).forEach(i => {
+    let t = req.query[i].toLowerCase();
+    if (t === 'true' || t === 'false') {
+      req.query[i] = t === 'true';
+    }
+  });
+
+  toPdf(html, req.query, (err, out) => {
+    if (err) {
+      return next(err);
+    }
+
+    res.setHeader('content-type', 'application/pdf');
+    res.send(out);
+  });
 });
 
 
