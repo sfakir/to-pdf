@@ -11,7 +11,7 @@ var md5       = require('md5');
 var wkBin = require('wkhtmltopdf-installer');
 var pdfFac    = require('../lib');
 
-var ebTestReg = /^\/tmp\/deployment\/application\//;
+var ebTestReg = /^\/tmp\/deployment\/application/;
 if (ebTestReg.test(wkBin.path)) { // in EB
   wkBin.path = wkBin.path.replace(ebTestReg, __dirname);
 }
