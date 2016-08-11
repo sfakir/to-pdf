@@ -1,6 +1,6 @@
 {
   "name": "srv-to-pdf",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Microservice to convert HTML with embedded or served css to pdf using webkitToPDF",
   "homepage": "https://github.com/uci-edu/to-pdf",
   "author": {
