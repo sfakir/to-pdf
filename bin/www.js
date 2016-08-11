@@ -12,7 +12,8 @@ var wkBin = require('wkhtmltopdf-installer');
 var pdfFac    = require('../lib');
 
 var ebTestReg = /^\/tmp\/deployment\/application/;
-if (ebTestReg.test(wkBin.path)) { // in EB
+var isEB = ebTestReg.test(wkBin.path);
+if (isEB) { // in EB
   wkBin.path = wkBin.path.replace(ebTestReg, path.normalize(path.join(__dirname, '..')));
 }
 
@@ -49,7 +50,9 @@ server.use(
 );
 
 server.use(restify.queryParser());
-server.use(restify.gzipResponse());
+if (!isEB) {
+  server.use(restify.gzipResponse());
+}
 
 server.post('/', restify.bodyParser(), function (req, res, next) {
   var html   = req.body && req.body.html;
