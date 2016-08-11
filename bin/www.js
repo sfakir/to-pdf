@@ -13,7 +13,7 @@ var pdfFac    = require('../lib');
 
 var ebTestReg = /^\/tmp\/deployment\/application/;
 if (ebTestReg.test(wkBin.path)) { // in EB
-  wkBin.path = wkBin.path.replace(ebTestReg, __dirname);
+  wkBin.path = wkBin.path.replace(ebTestReg, path.normalize(path.join(__dirname, '..')));
 }
 
 var pkg = require('../package.json');
