@@ -1,16 +1,20 @@
 #!/usr/bin/env node
 'use strict';
 
-var restify = require('restify');
-var extend  = require('deep-extend');
-var q       = require('q');
-var fs      = require('fs');
-var path    = require('path');
-var mkdirp  = require('mkdirp');
-var md5     = require('md5');
-var wkBinPath = require('wkhtmltopdf-installer').path;
-//var app = require('../lib');
-var pdfFac  = require('../lib');
+var restify   = require('restify');
+var extend    = require('deep-extend');
+var q         = require('q');
+var fs        = require('fs');
+var path      = require('path');
+var mkdirp    = require('mkdirp');
+var md5       = require('md5');
+var wkBin = require('wkhtmltopdf-installer');
+var pdfFac    = require('../lib');
+
+var ebTestReg = /^\/tmp\/deployment\/application\//;
+if (ebTestReg.test(wkBin.path)) { // in EB
+  wkBin.path = wkBin.path.replace(ebTestReg, __dirname);
+}
 
 var pkg = require('../package.json');
 
@@ -27,7 +31,7 @@ var writeFile   = q.nfbind(fs.writeFile);
 var tmpDir      = process.env.TMP_DIR || path.join(__dirname, '..', '.tmp');
 var serviceName = process.env.NAME || pkg.name;
 var toPdf       = pdfFac({
-  command: process.env.CMD_PATH || wkBinPath || 'wkhtmltopdf'
+  command: process.env.CMD_PATH || wkBin.path || 'wkhtmltopdf'
 });
 
 var server = restify.createServer({
