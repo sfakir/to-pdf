@@ -42,6 +42,9 @@
   "dependencies": {
     "deep-extend": "^0.4.1",
     "if-err": "^0.1.1",
+    "md5": "^2.1.0",
+    "mkdirp": "^0.5.1",
+    "q": "^1.4.1",
     "restify": "^4.0.3",
     "wkhtmltopdf": "^0.3.1"
   },

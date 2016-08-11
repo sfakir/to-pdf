@@ -5,3 +5,8 @@ config.json
 pm2.json
 /tmp
 .dockerid
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
