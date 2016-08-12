@@ -1,18 +1,18 @@
 #!/usr/bin/env node
 'use strict';
 
-var restify   = require('restify');
-var extend    = require('deep-extend');
-var q         = require('q');
-var fs        = require('fs');
-var path      = require('path');
-var mkdirp    = require('mkdirp');
-var md5       = require('md5');
-var wkBin = require('wkhtmltopdf-installer');
-var pdfFac    = require('../lib');
+var restify = require('restify');
+var extend  = require('deep-extend');
+var q       = require('q');
+var fs      = require('fs');
+var path    = require('path');
+var mkdirp  = require('mkdirp');
+var md5     = require('md5');
+var wkBin   = require('wkhtmltopdf-installer');
+var pdfFac  = require('../lib');
 
 var ebTestReg = /^\/tmp\/deployment\/application/;
-var isEB = ebTestReg.test(wkBin.path);
+var isEB      = ebTestReg.test(wkBin.path);
 if (isEB) { // in EB
   wkBin.path = wkBin.path.replace(ebTestReg, path.normalize(path.join(__dirname, '..')));
 }
@@ -43,8 +43,8 @@ var server = restify.createServer({
 
 server.use(
   function crossOrigin (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'X-Requested-With');
     return next();
   }
 );
@@ -53,6 +53,25 @@ server.use(restify.queryParser());
 if (!isEB) {
   server.use(restify.gzipResponse());
 }
+
+/**
+ * Gets sections which need temporary files on FS and saves them
+ *
+ * @param {...string[]} [sections] header and footer and any other sections requiring temporary html document creation
+ * @return {q.Promise[]} Array of promises
+ */
+const tempFiles = function (sections) {
+  var hfProms = [];
+  var time    = Date.now();
+  sections    = Array.prototype.slice.call(arguments);
+  sections.forEach(function (s) {
+    var sPath = path.join(tmpDir, md5(s) + '-' + time + '.html');
+    hfProms.push(writeFile(sPath, s).then(function () {
+      return sPath;
+    }));
+  });
+  return hfProms;
+};
 
 server.post('/', restify.bodyParser(), function (req, res, next) {
   var html   = req.body && req.body.html;
@@ -67,25 +86,17 @@ server.post('/', restify.bodyParser(), function (req, res, next) {
       }
     });
 
-    var hfProms = [];
-    var time    = Date.now();
-    if (header) {
-      var headerPath = path.join(tmpDir, md5(header) + '-' + time + '.html');
-      hfProms.push(writeFile(headerPath, header).then(function () {
-        return headerPath
-      }));
-      req.query['headerHtml'] = headerPath;
-    }
-    if (footer) {
-      var footerPath = path.join(tmpDir, md5(footer) + '-' + time + '.html');
-      hfProms.push(writeFile(footerPath, footer).then(function () {
-        return headerPath
-      }));
-      req.query['footerHtml'] = footerPath;
-    }
+    var hfProms = tempFiles(header, footer);
 
     q.all(hfProms)
-      .done(function (paths) {
+      .spread(function (headerPath, footerPath) {
+        if (header) {
+          req.query.headerHtml = headerPath;
+        }
+        if (footer) {
+          req.query.footerHtml = footerPath;
+        }
+
         toPdf(html, req.query, (err, out) => {
           if (err) {
             next(err);
@@ -93,9 +104,13 @@ server.post('/', restify.bodyParser(), function (req, res, next) {
 
             res.setHeader('content-type', 'application/pdf');
             res.send(out);
-            paths.forEach(function (p) {
-              fs.unlink(p);
-            });
+
+            if (headerPath) {
+              fs.unlink(headerPath);
+            }
+            if (footerPath) {
+              fs.unlink(footerPath);
+            }
           }
         });
       })
