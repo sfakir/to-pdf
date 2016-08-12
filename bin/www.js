@@ -8,15 +8,9 @@ var fs      = require('fs');
 var path    = require('path');
 var mkdirp  = require('mkdirp');
 var md5     = require('md5');
-var wkBin   = require('wkhtmltopdf-installer');
 var pdfFac  = require('../lib');
 
-var ebTestReg = /^\/tmp\/deployment\/application/;
-var isEB      = ebTestReg.test(wkBin.path);
-if (isEB) { // in EB
-  wkBin.path = wkBin.path.replace(ebTestReg, path.normalize(path.join(__dirname, '..')));
-}
-
+var isEB      = /^\/var\/app/.test(__dirname);
 var pkg = require('../package.json');
 
 // Get untrackable configurations.
@@ -32,7 +26,7 @@ var writeFile   = q.nfbind(fs.writeFile);
 var tmpDir      = process.env.TMP_DIR || path.join(__dirname, '..', '.tmp');
 var serviceName = process.env.NAME || pkg.name;
 var toPdf       = pdfFac({
-  command: process.env.CMD_PATH || wkBin.path || 'wkhtmltopdf'
+  command: process.env.CMD_PATH || 'wkhtmltopdf'
 });
 
 var server = restify.createServer({
