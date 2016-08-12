@@ -9,7 +9,6 @@ var isPromise = require('q').isPromise;
 
 describe('toPdf', function () {
   var testString = '<html><body><h1>hello, world</h1></body></html>';
-  var slowTime   = 10 * 1000 * 3; // 2 seconds is normal, slow needs x3 times for "Normal"
   var toPdf;
   var opts = {};
 
@@ -23,7 +22,7 @@ describe('toPdf', function () {
     });
 
     it('should produce a pdf buffer/file', function (done) {
-      this.slow(slowTime); // eslint-disable-line no-invalid-this
+      this.slow(30000); // eslint-disable-line no-invalid-this
 
       toPdf(testString, function (err, pdf) {
         assert.ifError(err);
@@ -45,7 +44,7 @@ describe('toPdf', function () {
       assert(!isStream(out), 'output should not be a stream');
     });
     it('should accept a callback', function (done) {
-      this.slow(slowTime); // eslint-disable-line no-invalid-this
+      this.slow(30000); // eslint-disable-line no-invalid-this
 
       var out = toPdf(testString, function () {
         assert(true, 'callback should be called');
