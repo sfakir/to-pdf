@@ -85,6 +85,7 @@ server.post('/', restify.bodyParser(), function (req, res, next) {
         req.query[i] = t === 'true';
       }
     });
+    req.query.debug = req.query.debug || isEB;
 
     var hfProms = tempFiles(header, footer);
 
